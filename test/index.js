@@ -58,10 +58,10 @@ function render(vdom, container) {
     let component;
     let returnVdom;
     if (vdom.nodeName.prototype.render) {
-      component = new vdom.nodeName()
+      component = new vdom.nodeName(vdom.attributes)
       returnVdom = component.render()
     } else {
-      returnVdom = vdom.nodeName() // 针对无状态组件: const A = () => <div>I'm componentsA</div>
+      returnVdom = vdom.nodeName(vdom.attributes) // 针对无状态组件: const A = () => <div>I'm componentsA</div>
     }
     render(returnVdom, container)
     return
@@ -92,7 +92,7 @@ const LightReact = {
   render,
 };
 
-const A = () => <div>I'm componentA</div>
+const A = (props) => <div>I'm componentA - {props?.name}</div>
 // 测试
 const element = (
   <div className="title">
@@ -100,7 +100,7 @@ const element = (
     <span className="content" style={{ color: "red", marginLeft: 20, display: "inline-block" }}>
       world!
     </span>
-    <A />
+    <A name={"Hello react"}/>
   </div>
 );
 
