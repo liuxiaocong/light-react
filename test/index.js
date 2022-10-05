@@ -7,7 +7,7 @@ function isNumber(i) {
 }
 
 function isFunction(i) {
-  return typeof i === 'function'
+  return typeof i === "function";
 }
 
 function humpToStandard(klass) {
@@ -53,29 +53,42 @@ function setAttribute(dom, attr, value) {
 //   nodeName: "div",
 // };
 
-function render(vdom, container) {
-  if (isFunction(vdom.nodeName)) { // 如果 JSX 中是自定义组件
-    let component;
-    let returnVdom;
-    if (vdom.nodeName.prototype.render) {
-      component = new vdom.nodeName(vdom.attributes)
-      returnVdom = component.render()
-    } else {
-      returnVdom = vdom.nodeName(vdom.attributes) // 针对无状态组件: const A = () => <div>I'm componentsA</div>
-    }
-    render(returnVdom, container)
-    return
-  }
+function _render(component, container) {
+  const vdom = component.render ? component.render() : component;
   if (isString(vdom) || isNumber(vdom)) {
-    container.innerText = container.innerText + vdom; // fix <div>I'm {this.props.name}</div>
+    container.innerText = container.innerText + vdom;
     return;
   }
-  const dom = document.createElement(vdom.nodeName);
+  const hasSetRoot = !!component.container;
+  const dom = hasSetRoot
+    ? component.container
+    : document.createElement(vdom.nodeName);
+  if (hasSetRoot) {
+    component.container.innerHTML = null;
+  }
   for (let attr in vdom.attributes) {
     setAttribute(dom, attr, vdom.attributes[attr]);
   }
   vdom.children.forEach((vdomChild) => render(vdomChild, dom));
+
+  if (hasSetRoot) {
+    return;
+  }
+
+  component.container = dom; // container?
   container.appendChild(dom);
+}
+
+function render(vdom, container) {
+  let component;
+  if (isFunction(vdom.nodeName)) {
+    if (vdom.nodeName.prototype.render) {
+      component = new vdom.nodeName(vdom.attributes);
+    } else {
+      component = vdom.nodeName(vdom.attributes); // 处理无状态组件: const A = (props) => <div>I'm {props.name}</div>
+    }
+  }
+  component ? _render(component, container) : _render(vdom, container);
 }
 
 function createElement(tag, attr, ...child) {
@@ -92,19 +105,54 @@ const LightReact = {
   render,
 };
 
-const A = (props) => <div>I'm componentA - {props?.name}</div>
+function Component(props) {
+  this.props = props;
+  this.state = this.state || {
+    count: 2,
+  };
+}
+
+Component.prototype.setState = function (updateObj) {
+  this.state = Object.assign({}, this.state, updateObj);
+  console.log(this);
+  _render(this); // 重新渲染
+};
+class A extends Component {
+  render() {
+    return (
+      <div>
+        <p>
+          I'm {this.props.name} {this.state?.count}
+        </p>
+        <button
+          onClick={() => {
+            this.setState({
+              count: 1,
+            });
+          }}
+        >
+          Add count
+        </button>
+      </div>
+    );
+  }
+}
+
 // 测试
 const element = (
   <div className="title">
     hello
-    <span className="content" style={{ color: "red", marginLeft: 20, display: "inline-block" }}>
+    <span
+      className="content"
+      style={{ color: "red", marginLeft: 20, display: "inline-block" }}
+    >
       world!
     </span>
-    <A name={"Hello react"}/>
+    <A name={"Hello react1"} />
   </div>
 );
 
-console.log(element)
+console.log(element);
 console.log(JSON.stringify(element)); // 打印结果符合预期
 
 LightReact.render(
