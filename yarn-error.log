@@ -1,0 +1,53 @@
+Arguments: 
+  /Users/evan.liu/.nvm/versions/node/v16.14.0/bin/node /usr/local/bin/yarn
+
+PATH: 
+  /Users/evan.liu/.local/share/solana/install/active_release/bin:/Users/evan.liu/.nvm/versions/node/v16.14.0/bin:/Users/evan.liu/.nvm/versions/node/v16.14.0/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  16.14.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  SyntaxError: /Users/evan.liu/evan/zeroReact/study/package.json: Unexpected token } in JSON at position 522
+      at JSON.parse (<anonymous>)
+      at /Users/evan.liu/.config/yarn/global/node_modules/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/Users/evan.liu/.config/yarn/global/node_modules/yarn/lib/cli.js:310:30)
+      at /Users/evan.liu/.config/yarn/global/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "zeroreact",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "start": "webpack-dev-server --open"
+    },
+    "author": "Evan Liu",
+    "license": "ISC",
+    "dependencies": {
+      "@babel/core": "^7.0.0",
+      "@babel/preset-env": "^7.0.0",
+      "@babel/preset-react": "^7.0.0",
+      "acorn": "^8.8.0",
+      "alter": "^0.2.0",
+      "ast-traverse": "^0.1.1",
+      "babel-loader": "v8.0.0-beta.0",
+      "webpack": "^4.17.2",
+      "webpack-cli": "^3.1.0",
+      "webpack-dev-server": "^3.1.8",
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
